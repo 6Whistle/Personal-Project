@@ -3,8 +3,11 @@ package com.whistle6.api.user.service;
 import org.springframework.stereotype.Service;
 
 import com.whistle6.api.common.component.Messenger;
+import com.whistle6.api.common.component.security.JwtProvider;
 import com.whistle6.api.common.enums.MessageCode;
 import com.whistle6.api.common.enums.RoleCode;
+import com.whistle6.api.token.model.Token;
+import com.whistle6.api.token.repository.TokenRepository;
 import com.whistle6.api.user.model.User;
 import com.whistle6.api.user.model.UserDTO;
 import com.whistle6.api.user.repository.UserRepository;
@@ -16,11 +19,12 @@ import java.util.stream.Stream;
 
 import lombok.RequiredArgsConstructor;
 
-
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService{
+    private final JwtProvider jwtProvider;
     private final UserRepository userRepository;
+    private final TokenRepository tokenRepository;
 
     // ==================== Command ====================
 
@@ -119,12 +123,37 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public Messenger login(UserDTO userDTO) {
-        return MessageCode.GenerateMessenger(Stream.of(userDTO)
+        return Stream.of(userDTO)
         .map(i -> userRepository.findByEmailDSL(i.getEmail()).orElseGet(User::new))
         .filter(i -> i.getId() != null)
         .filter(i -> i.getPassword().equals(userDTO.getPassword()))
-        .map(i -> MessageCode.SUCCESS)
+        .map(i -> deleteToken(i))
+        .peek(i -> i.setToken(tokenRepository.save(
+                                Token.builder()
+                                .user(i)
+                                .expiredAt(jwtProvider.getExpiredAt())
+                                .refreshToken(jwtProvider.createRefreshToken(UserDTO.builder().role(i.getRole()).build()))
+                                .build())))
+        .map(i -> userRepository.save(i))
+        .map(i -> Messenger.builder()
+            .status(MessageCode.SUCCESS.getStatus())
+            .message(MessageCode.SUCCESS.getMessage())
+            .refreshToken(i.getToken().getRefreshToken())
+            .accessToken(jwtProvider.createAccessToken(UserDTO.builder().role(i.getRole()).build()))
+            .build())
         .findAny()
-        .orElseGet(() -> MessageCode.FAIL));
+        .orElseGet(() -> MessageCode.GenerateMessenger(MessageCode.FAIL));
+    }
+
+    @Override
+    @Transactional
+    public User deleteToken(User user) {
+        return Stream.of(user)
+        .filter(i -> i.getToken() != null)
+        .peek(i -> tokenRepository.deleteById(i.getToken().getId()))
+        .peek(i -> i.setToken(null))
+        .map(i -> userRepository.save(i))
+        .findAny()
+        .orElseGet(() -> user);
     }
 }

@@ -23,4 +23,6 @@ public interface UserService extends CommandService<User, UserDTO>, QueryService
     Messenger existsByEmail(String email);
 
     Messenger login(UserDTO userDTO);
+
+    User deleteToken(User user);
 }

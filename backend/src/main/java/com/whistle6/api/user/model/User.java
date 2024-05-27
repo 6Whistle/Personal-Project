@@ -1,12 +1,14 @@
 package com.whistle6.api.user.model;
 
 import com.whistle6.api.common.model.BaseEntity;
+import com.whistle6.api.token.model.Token;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -48,4 +50,8 @@ public class User extends BaseEntity{
     @Setter
     @Column(nullable = false)
     private String birth;
+
+    @Setter
+    @OneToOne(mappedBy = "user")
+    private Token token;
 }
