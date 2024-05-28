@@ -74,6 +74,13 @@ public class UserController {
         );
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<Messenger> logout(@RequestBody UserDTO userDTO) {
+        return ResponseEntity.ok(
+            userService.logout(userDTO)
+        );
+    }
+
     @GetMapping("/refresh")
     public ResponseEntity<Messenger> refresh(@RequestHeader(name = "Refresh-Token") String refreshToken) {
         return ResponseEntity.ok(

@@ -1,5 +1,7 @@
 package com.whistle6.api.user.model;
 
+import java.time.LocalDate;
+
 import com.whistle6.api.common.model.BaseEntity;
 import com.whistle6.api.token.model.Token;
 
@@ -49,7 +51,7 @@ public class User extends BaseEntity{
 
     @Setter
     @Column(nullable = false)
-    private String birth;
+    private LocalDate birth;
 
     @Setter
     @OneToOne(mappedBy = "user")

@@ -1,6 +1,4 @@
-package com.whistle6.api.user.model;
-
-import java.time.LocalDate;
+package com.whistle6.api.toeic.model;
 
 import org.springframework.stereotype.Component;
 
@@ -14,12 +12,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserDTO {
+public class ToeicDTO {
     private Long id;
-    private String email;
-    private String password;
-    private String name;
-    private String role;
-    private String phone;
-    private LocalDate birth;
+    private Integer part;
+    private String question;
+    private String answer;
+    private String image;
+    private String choices;
 }

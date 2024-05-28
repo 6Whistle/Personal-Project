@@ -150,6 +150,18 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    public Messenger logout(UserDTO userDTO) {
+        return Stream.of(userDTO)
+        .filter(i -> i.getId() != null)
+        .map(i -> tokenRepository.findById(i.getId()).orElseGet(() -> Token.builder().build()))
+        .filter(i -> i.getId() != null)
+        .peek(i -> tokenRepository.deleteById(i.getId()))
+        .map(i -> MessageCode.GenerateMessenger(MessageCode.SUCCESS))
+        .findAny()
+        .orElseGet(() -> MessageCode.GenerateMessenger(MessageCode.FAIL));
+    }
+
+    @Override
     @Transactional
     public User deleteToken(User user) {
         return Stream.of(user)
@@ -178,4 +190,5 @@ public class UserServiceImpl implements UserService{
         .findAny()
         .orElseThrow(() -> new AuthException());
     }
+
 }
