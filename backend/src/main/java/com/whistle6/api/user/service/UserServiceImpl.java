@@ -3,6 +3,7 @@ package com.whistle6.api.user.service;
 import org.springframework.stereotype.Service;
 
 import com.whistle6.api.common.component.Messenger;
+import com.whistle6.api.common.component.exception.AuthException;
 import com.whistle6.api.common.component.security.JwtProvider;
 import com.whistle6.api.common.enums.MessageCode;
 import com.whistle6.api.common.enums.RoleCode;
@@ -70,8 +71,10 @@ public class UserServiceImpl implements UserService{
     public Messenger deleteById(Long id) {
         return MessageCode.GenerateMessenger(
             Stream.of(id)
-            .filter(i -> userRepository.existsByIdDSL(i))
-            .peek(i -> userRepository.deleteById(i))
+            .map(i -> userRepository.findByIdDSL(i).orElseGet(User::new))
+            .filter(i -> i.getId() != null)
+            .peek(i -> deleteToken(i))
+            .peek(i -> userRepository.deleteById(i.getId()))
             .map(i -> MessageCode.SUCCESS)
             .findAny()
             .orElseGet(() -> MessageCode.FAIL)    
@@ -83,6 +86,7 @@ public class UserServiceImpl implements UserService{
     public Messenger deleteAll() {
         return MessageCode.GenerateMessenger(
             Stream.of(MessageCode.SUCCESS)
+            .peek(i -> tokenRepository.deleteAll())
             .peek(i -> userRepository.deleteAll())
             .map(i -> MessageCode.SUCCESS)
             .findAny()
@@ -155,5 +159,23 @@ public class UserServiceImpl implements UserService{
         .map(i -> userRepository.save(i))
         .findAny()
         .orElseGet(() -> user);
+    }
+
+    @Override
+    public Messenger refresh(String refreshToken) {
+        return Stream.of(refreshToken)
+        .filter(i -> i.startsWith("Bearer "))
+        .map(i -> i.substring(7))
+        .filter(i -> jwtProvider.validateToken(i, "refresh"))
+        .map(i -> tokenRepository.findByRefreshTokenDSL(i).orElseGet(() -> Token.builder().build()))
+        .filter(i -> i.getId() != null)
+        .map(i -> jwtProvider.createAccessToken(toDTO(i.getUser())))
+        .map(i -> Messenger.builder()
+                    .accessToken(i)
+                    .status(MessageCode.SUCCESS.getStatus())
+                    .message(MessageCode.SUCCESS.getMessage())
+                    .build())
+        .findAny()
+        .orElseThrow(() -> new AuthException());
     }
 }

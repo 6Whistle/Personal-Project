@@ -77,6 +77,7 @@ public class JwtProvider {
         try {
             return Stream.of(Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token))
             .filter(i -> i.getPayload().getSubject().equals(type))
+            .filter(i -> i.getPayload().getIssuer().equals(issuer))
             .filter(i -> i.getPayload().getExpiration().after(Date.from(Instant.now())))
             .map(i -> true)
             .findAny()

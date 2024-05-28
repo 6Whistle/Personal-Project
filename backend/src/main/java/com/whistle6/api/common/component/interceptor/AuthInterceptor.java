@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.whistle6.api.common.component.exception.AuthException;
 import com.whistle6.api.common.component.security.JwtProvider;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,9 +24,10 @@ public class AuthInterceptor implements HandlerInterceptor {
         return Stream.of(request)
         .map(req -> jwtProvider.parseBearerToken(req, "Authorization"))
         .filter(i -> !i.equals("undefined"))
-        .map(i -> jwtProvider.validateToken(i, "access"))
+        .filter(i -> jwtProvider.validateToken(i, "access"))
+        .map(i -> true)
         .findAny()
-        .orElseGet(() -> false);
+        .orElseThrow(() -> new AuthException());
     }
 
     @Override

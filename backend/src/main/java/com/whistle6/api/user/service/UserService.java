@@ -25,4 +25,6 @@ public interface UserService extends CommandService<User, UserDTO>, QueryService
     Messenger login(UserDTO userDTO);
 
     User deleteToken(User user);
+
+    Messenger refresh(String refreshToken);
 }
