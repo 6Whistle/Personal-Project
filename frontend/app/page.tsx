@@ -3,19 +3,13 @@ import axios from "axios";
 import {
   SubmitErrorHandler,
   SubmitHandler,
-  set,
   useForm,
 } from "react-hook-form";
-import Header from "./component/header";
-import RadioButton, { radioButtonList } from "./atomic/chat/radio_button";
-import ChatInput from "./component/chat_input";
-import ChatOutput from "./component/chat_output";
-
-type ChatForms = {
-  response: string;
-  question: string;
-  category: string;
-};
+import RadioButton, { radioButtonList } from "./atomic/button/radio-button";
+import ChatInputForm from "./component/chat/module/chat-input-form";
+import RegisterHeader from "./component/common/header/register-header";
+import { ChatInput } from "./component/chat/model/chat";
+import ChatOutputForm from "./component/chat/module/chat-output-form";
 
 export default function Home() {
   const {
@@ -24,9 +18,9 @@ export default function Home() {
     watch,
     setValue,
     formState: { errors },
-  } = useForm<ChatForms>();
+  } = useForm<ChatInput>();
 
-  const onSubmit: SubmitHandler<ChatForms> = ({ question, category }) => {
+  const onSubmit: SubmitHandler<ChatInput> = ({ question, category }) => {
     if (!category) {
       setValue("response", "Please choose a category");
       return;
@@ -43,18 +37,18 @@ export default function Home() {
       .catch((error) => setValue("response", JSON.stringify(error)));
   };
 
-  const onInValid: SubmitErrorHandler<ChatForms> = () => {
+  const onInValid: SubmitErrorHandler<ChatInput> = () => {
     setValue("response", "Please enter a question");
   };
 
   return (
     <div className="w-full h-full bg-white flex-col justify-center items-center flex">
-      <Header />
+      <RegisterHeader />
       <form
         onSubmit={handleSubmit(onSubmit, onInValid)}
         className="w-full h-full p-6 bg-white flex-col justify-center items-center gap-8 flex"
       >
-        <ChatOutput
+        <ChatOutputForm
           title="BIT-LLM"
           subtitle="Ask everything to BIT-LLM"
           text={watch("response")}
@@ -71,7 +65,7 @@ export default function Home() {
             />
           ))}
         </ul>
-        <ChatInput register={register} targetText="question" />
+        <ChatInputForm register={register} />
       </form>
     </div>
   );

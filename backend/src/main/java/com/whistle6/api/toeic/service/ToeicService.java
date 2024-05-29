@@ -1,5 +1,7 @@
 package com.whistle6.api.toeic.service;
 
+import java.util.stream.Stream;
+
 import com.whistle6.api.common.command.CommandService;
 import com.whistle6.api.common.query.QueryService;
 import com.whistle6.api.toeic.model.Toeic;
@@ -13,7 +15,7 @@ public interface ToeicService extends CommandService<Toeic, ToeicDTO>, QueryServ
             .question(entity.getQuestion())
             .answer(entity.getAnswer())
             .image(entity.getImage())
-            .choices(entity.getChoices())
+            .choices(Stream.of(entity.getChoices().split(",")).toList())
             .build();
     }
 }

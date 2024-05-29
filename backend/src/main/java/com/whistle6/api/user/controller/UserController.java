@@ -16,11 +16,12 @@ import com.whistle6.api.user.model.UserDTO;
 import com.whistle6.api.user.service.UserService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
@@ -32,6 +33,7 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<Messenger> register(@RequestBody UserDTO userDTO) {
+        log.info("register: {}", userDTO);
         return ResponseEntity.ok(
             userService.save(userDTO)
         );
@@ -39,6 +41,7 @@ public class UserController {
 
     @PutMapping("/update")
     public ResponseEntity<Messenger> update(@RequestBody UserDTO userDTO) {
+        log.info("update: {}", userDTO);
         return ResponseEntity.ok(
             userService.update(userDTO)
         );
@@ -46,6 +49,7 @@ public class UserController {
 
     @PutMapping("/delete")
     public ResponseEntity<Messenger> delete(@RequestParam(name = "id") Long id) {
+        log.info("delete: {}", id);
         return ResponseEntity.ok(
             userService.deleteById(id)
         );
@@ -55,6 +59,7 @@ public class UserController {
 
     @GetMapping("/all")
     public ResponseEntity<List<UserDTO>> findAll() {
+        log.info("findAll");
         return ResponseEntity.ok(
             userService.findAll()
         );
@@ -62,6 +67,7 @@ public class UserController {
 
     @GetMapping("/check-email")
     public ResponseEntity<Messenger> existsByEmail(@RequestParam(name = "email") String email) {
+        log.info("existsByEmail: {}", email);
         return ResponseEntity.ok(
             userService.existsByEmail(email)
         );
@@ -69,6 +75,7 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<Messenger> login(@RequestBody UserDTO userDTO) {
+        log.info("login: {}", userDTO);
         return ResponseEntity.ok(
             userService.login(userDTO)
         );
@@ -76,6 +83,7 @@ public class UserController {
 
     @PostMapping("/logout")
     public ResponseEntity<Messenger> logout(@RequestBody UserDTO userDTO) {
+        log.info("logout: {}", userDTO);
         return ResponseEntity.ok(
             userService.logout(userDTO)
         );
@@ -83,6 +91,7 @@ public class UserController {
 
     @GetMapping("/refresh")
     public ResponseEntity<Messenger> refresh(@RequestHeader(name = "Refresh-Token") String refreshToken) {
+        log.info("refresh: {}", refreshToken);
         return ResponseEntity.ok(
             userService.refresh(refreshToken)
         );

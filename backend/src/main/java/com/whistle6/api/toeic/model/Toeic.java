@@ -30,6 +30,7 @@ public class Toeic extends BaseEntity{
     @Column(name = "part", nullable = false)
     private Integer part;
 
+    @Setter
     @Column(name = "question", nullable = false, unique = true)
     private String question;
 

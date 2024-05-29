@@ -1,12 +1,13 @@
-import HeaderButton from "../atomic/header/header_button";
-import TabButton, { tabNames } from "../atomic/header/tab_button";
+import Link from "next/link";
+import HeaderButton from "../../../atomic/header/header-button";
+import TabButton, { tabNames } from "../../../atomic/header/tab-button";
 
-export default function Header() {
+export default function RegisterHeader() {
   return (
     <nav className="w-full h-16 px-20 py-4 bg-white shadow border-b-2 border-neutral-200 justify-start items-center flex">
-      <div className="text-black text-xl font-semibold font-['Inter'] whitespace-nowrap">
+      <Link className="text-black text-xl font-semibold font-['Inter'] whitespace-nowrap" href={"/"}>
         6Whistle Blog
-      </div>
+      </Link>
       <div className="w-full justify-center items-center gap-8 flex">
         {tabNames.map((tabName) => (
           <TabButton tabName={tabName} key={tabName} />

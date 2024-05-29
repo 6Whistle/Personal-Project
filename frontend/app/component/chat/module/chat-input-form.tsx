@@ -1,17 +1,18 @@
 import { UseFormRegister } from "react-hook-form";
-import TextInput from "../atomic/chat/text_input";
-import ImageButton, { buttonImagesUrl } from "../atomic/chat/image_button";
+import TextInput from "../../../atomic/input/text-input";
+import ImageButton, {
+  buttonImagesUrl,
+} from "../../../atomic/button/image-button";
+import { ChatInput } from "../model/chat";
 
-export default function ChatInput({
+export default function ChatInputForm({
   register,
-  targetText,
 }: {
-  register: UseFormRegister<any>;
-  targetText: string;
+  register: UseFormRegister<ChatInput>;
 }) {
   return (
     <div className="w-5/6 h-10 px-4 py-2 bg-white rounded-lg border border-neutral-200 justify-start items-center gap-3 flex">
-      <TextInput register={register} target={targetText} />
+      <TextInput register={register} target="question" />
       {buttonImagesUrl.map((url, i) => (
         <ImageButton key={i} url={url} />
       ))}

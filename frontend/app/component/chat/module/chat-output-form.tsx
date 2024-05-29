@@ -1,12 +1,10 @@
-export default function ChatOutput({
+import { ChatOutput } from "../model/chat";
+
+export default function ChatOutputForm({
   title,
   subtitle,
   text,
-}: {
-  title: string;
-  subtitle: string;
-  text: string;
-}) {
+}: ChatOutput) {
   return (
     <div className="w-5/6 h-[500px] px-10 py-5 flex-col bg-zinc-100 justify-start items-start gap-6 flex rounded-lg">
       <div className="self-stretch text-black text-[64px] font-bold font-['Inter']">

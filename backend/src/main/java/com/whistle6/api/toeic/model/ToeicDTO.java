@@ -1,5 +1,7 @@
 package com.whistle6.api.toeic.model;
 
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
 import lombok.AllArgsConstructor;
@@ -18,5 +20,5 @@ public class ToeicDTO {
     private String question;
     private String answer;
     private String image;
-    private String choices;
+    private List<String> choices;
 }

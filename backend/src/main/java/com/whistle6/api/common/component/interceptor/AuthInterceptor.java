@@ -3,6 +3,7 @@ package com.whistle6.api.common.component.interceptor;
 import java.util.stream.Stream;
 
 import org.springframework.stereotype.Component;
+import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -21,7 +22,9 @@ public class AuthInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
-        return Stream.of(request)
+        return CorsUtils.isPreFlightRequest(request)
+        ? true
+        : Stream.of(request)
         .map(req -> jwtProvider.parseBearerToken(req, "Authorization"))
         .filter(i -> !i.equals("undefined"))
         .filter(i -> jwtProvider.validateToken(i, "access"))
