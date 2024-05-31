@@ -1,8 +1,10 @@
 package com.whistle6.api.toeic.service;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 import com.whistle6.api.common.command.CommandService;
+import com.whistle6.api.common.component.Messenger;
 import com.whistle6.api.common.query.QueryService;
 import com.whistle6.api.toeic.model.Toeic;
 import com.whistle6.api.toeic.model.ToeicDTO;
@@ -18,4 +20,8 @@ public interface ToeicService extends CommandService<Toeic, ToeicDTO>, QueryServ
             .choices(Stream.of(entity.getChoices().split(",")).toList())
             .build();
     }
+
+    Messenger random();
+
+    Messenger saveAll(List<ToeicDTO> toeicDTOs);
 }

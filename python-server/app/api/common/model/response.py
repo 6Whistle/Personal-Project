@@ -2,4 +2,6 @@ from dataclasses import dataclass
 from pydantic import BaseModel
 
 class Response(BaseModel):
-    answer: str
+    status: int = 200
+    message: str = "success"
+    values: object = None

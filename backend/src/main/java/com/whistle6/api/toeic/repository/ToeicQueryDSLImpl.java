@@ -44,5 +44,10 @@ public class ToeicQueryDSLImpl implements ToeicQueryDSL{
     public Long countAllDSL() {
         return queryFactory.select(qToeic.id.count()).from(qToeic).fetchOne();
     }
+
+    @Override
+    public Optional<Toeic> findRandomDSL(Long offset) {
+        return Optional.ofNullable(queryFactory.selectFrom(qToeic).offset(offset).limit(1).fetchOne());
+    }
     
 }

@@ -9,4 +9,6 @@ export const enum RQ{
     FINDALL='/all',
     REFRESH='/refresh',
     EMAIL = "/check-email",
+    RANDOM = "/random",
+    CHAT = "/chat",
 }

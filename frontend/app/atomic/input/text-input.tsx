@@ -10,7 +10,7 @@ export default function TextInput({
   return (
     <input
       type="text"
-      {...register(target, { required: true })}
+      {...register(target)}
       className="w-full h-7 text-zinc-500 text-base font-normal font-['Inter'] leading-normal"
     />
   );

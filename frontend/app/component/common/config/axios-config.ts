@@ -99,10 +99,10 @@ export const accessTokenAPI = async (
     .then((res) =>  res.data)
     .catch(async (error) => {
         console.log("error occured : ", error);
-        if (error.response.data.status === 401)
+        if (error.response.status === 401 || error.response.data.status === 401)
             return (await refreshTokenAPI()) === true
               ? await accessTokenAPI(instance, restMethod, url, params, body)
-              : { status: 400, message: "Failed" };
-        return { status: 400, message: "Failed" };
+              : { status: 401, message: "Failed" };
+        return { status: 401, message: "Failed" };
     });
 };

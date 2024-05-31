@@ -1,6 +1,6 @@
 import { UseFormSetValue } from "react-hook-form";
 
-export default function RadioButton({
+export default function ChatRadioButton({
   title,
   subtitle,
   value,
@@ -48,11 +48,5 @@ export const radioButtonList = [
     subtitle: "Use AI Model",
     value: "AI",
     target: "category",
-  },
-  {
-    title: "Tab 2",
-    subtitle: "Use Tab 2 Model",
-    value: "Tab 2",
-    target: "category",
-  },
+  }
 ];

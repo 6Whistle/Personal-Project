@@ -1,4 +1,7 @@
-from fastapi import FastAPI
+import base64
+from typing import Optional, Union
+from fastapi import FastAPI, HTTPException, Header
+import jwt
 from langchain.chat_models.openai import ChatOpenAI
 from langchain.schema import SystemMessage, HumanMessage, AIMessage
 import os
@@ -48,8 +51,15 @@ async def read_root():
     return {"Hello": "World"}
 
 
-@app.post("/chat/ai")
-async def chat(req:Request) -> Response:
+@app.post("/app/chat/ai")
+async def chat(req:Request, Authorization = Header(default=None)) -> Response:
+    if Authorization is None:
+        raise HTTPException(status_code=401, detail="Authorization Error")
+    try:
+        token = jwt.decode(Authorization.split(' ')[1], base64.b64decode(os.environ["SECRET_KEY"].encode()), algorithms=['HS256'])
+    except Exception as e:
+        raise HTTPException(status_code=401, detail="Authorization Error")
+    
     chat_model = ChatOpenAI(
         openai_api_key=os.environ["API_KEY"],
         temperature=0.1,
@@ -57,7 +67,20 @@ async def chat(req:Request) -> Response:
         model_name="gpt-3.5-turbo-0613",
     )
 
-    return Response(answer=chat_model.predict(req.question))
+    return Response(values=chat_model.predict(req.question))
+
+@app.get("/test")
+async def test(Authorization: Optional[str] = Header(None, convert_underscores=False)):
+    if Authorization is None:
+        raise HTTPException(status_code=401, detail="Authorization Error")
+    try:
+        token = jwt.decode(Authorization.split(' ')[1], base64.b64decode(os.environ["SECRET_KEY"].encode()), algorithms=['HS256'])
+    except Exception as e:
+        raise HTTPException(status_code=401, detail="Authorization Error")
+    
+        
+    return {"Hello": "World"}
+
 
 if __name__ == "__main__":
     import os

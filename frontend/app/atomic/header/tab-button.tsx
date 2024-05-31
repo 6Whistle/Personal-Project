@@ -18,6 +18,6 @@ export const tabNames: {tabName: string, url: string}[] = [];
 export const loginedTabNames = [
   { tabName : "Chat", url : `${PG.CHAT}` },
   { tabName : "Profile", url : `${PG.USER}` },
-  { tabName : "Toeic", url : `${PG.TOIEC}` },
+  { tabName : "Toeic", url : `${PG.TOEIC}` },
 ]
 

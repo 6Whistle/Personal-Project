@@ -25,57 +25,58 @@ public class ToeicServiceImpl implements ToeicService {
     @Transactional
     public Messenger save(ToeicDTO dto) {
         return Stream.of(dto)
-        .filter(i -> i.getPart() != null && i.getQuestion() != null && i.getAnswer() != null)
-        .filter(i -> !toeicRepository.existsByQuestionDSL(i.getQuestion()))
-        .map(i -> toeicRepository.save(
-            Toeic.builder()
-            .part(i.getPart())
-            .question(i.getQuestion())
-            .answer(i.getAnswer())
-            .image(i.getImage())
-            .choices(i.getChoices() == null ? null : String.join(",", i.getChoices()))
-            .build()))
-        .map(i -> MessageCode.GenerateMessenger(MessageCode.SUCCESS))
-        .findAny()
-        .orElseGet(() -> MessageCode.GenerateMessenger(MessageCode.FAIL));
+                .filter(i -> i.getPart() != null && i.getQuestion() != null && i.getAnswer() != null)
+                .filter(i -> !toeicRepository.existsByQuestionDSL(i.getQuestion()))
+                .map(i -> toeicRepository.save(
+                        Toeic.builder()
+                                .part(i.getPart())
+                                .question(i.getQuestion())
+                                .answer(i.getAnswer())
+                                .image(i.getImage())
+                                .choices(i.getChoices() == null ? null : String.join(",", i.getChoices()))
+                                .build()))
+                .map(i -> MessageCode.GenerateMessenger(MessageCode.SUCCESS))
+                .findAny()
+                .orElseGet(() -> MessageCode.GenerateMessenger(MessageCode.FAIL));
     }
 
     @Override
     @Transactional
     public Messenger update(ToeicDTO dto) {
         return Stream.of(dto)
-        .filter(i -> i.getId() != null && i.getPart() != null && i.getQuestion() != null && i.getAnswer() != null)
-        .filter(i -> !toeicRepository.existsByQuestionDSL(i.getQuestion()))
-        .map(i -> toeicRepository.findByIdDSL(i.getId()).orElseGet(Toeic::new))
-        .filter(i -> i.getId() != null)
-        .peek(i -> i.setPart(dto.getPart()))
-        .peek(i -> i.setQuestion(dto.getQuestion()))
-        .peek(i -> i.setAnswer(dto.getAnswer()))
-        .peek(i -> i.setImage(dto.getImage()))
-        .peek(i -> i.setChoices(i.getChoices() == null ? null : String.join(",", i.getChoices())))
-        .map(i -> toeicRepository.save(i))
-        .map(i -> MessageCode.GenerateMessenger(MessageCode.SUCCESS))
-        .findAny()
-        .orElseGet(() -> MessageCode.GenerateMessenger(MessageCode.FAIL));
+                .filter(i -> i.getId() != null && i.getPart() != null && i.getQuestion() != null
+                        && i.getAnswer() != null)
+                .filter(i -> !toeicRepository.existsByQuestionDSL(i.getQuestion()))
+                .map(i -> toeicRepository.findByIdDSL(i.getId()).orElseGet(Toeic::new))
+                .filter(i -> i.getId() != null)
+                .peek(i -> i.setPart(dto.getPart()))
+                .peek(i -> i.setQuestion(dto.getQuestion()))
+                .peek(i -> i.setAnswer(dto.getAnswer()))
+                .peek(i -> i.setImage(dto.getImage()))
+                .peek(i -> i.setChoices(i.getChoices() == null ? null : String.join(",", i.getChoices())))
+                .map(i -> toeicRepository.save(i))
+                .map(i -> MessageCode.GenerateMessenger(MessageCode.SUCCESS))
+                .findAny()
+                .orElseGet(() -> MessageCode.GenerateMessenger(MessageCode.FAIL));
     }
 
     @Override
     public Messenger deleteById(Long id) {
         return Stream.of(id)
-        .filter(i -> toeicRepository.existsByIdDSL(id))
-        .peek(i -> toeicRepository.deleteById(id))
-        .map(i -> MessageCode.GenerateMessenger(MessageCode.SUCCESS))
-        .findAny()
-        .orElseGet(() -> MessageCode.GenerateMessenger(MessageCode.FAIL));
+                .filter(i -> toeicRepository.existsByIdDSL(id))
+                .peek(i -> toeicRepository.deleteById(id))
+                .map(i -> MessageCode.GenerateMessenger(MessageCode.SUCCESS))
+                .findAny()
+                .orElseGet(() -> MessageCode.GenerateMessenger(MessageCode.FAIL));
     }
 
     @Override
     public Messenger deleteAll() {
         return Stream.of(true)
-        .peek(i -> toeicRepository.deleteAll())
-        .map(i -> MessageCode.GenerateMessenger(MessageCode.SUCCESS))
-        .findAny()
-        .get();
+                .peek(i -> toeicRepository.deleteAll())
+                .map(i -> MessageCode.GenerateMessenger(MessageCode.SUCCESS))
+                .findAny()
+                .get();
     }
 
     // ==================== Query ====================
@@ -99,5 +100,28 @@ public class ToeicServiceImpl implements ToeicService {
     public Boolean existsById(Long id) {
         return toeicRepository.existsByIdDSL(id);
     }
-    
+
+    @Override
+    public Messenger random() {
+        return Stream.of(toeicRepository.count())
+                .map(i -> (long) ((Math.random() * toeicRepository.count()) % i))
+                .peek(System.out::println)
+                .map(i -> toeicRepository.findRandomDSL(i).orElseGet(Toeic::new))
+                .map(i -> Messenger.builder().values(toDTO(i)).status(MessageCode.SUCCESS.getStatus())
+                        .message(MessageCode.SUCCESS.getMessage()).build())
+                .findAny()
+                .orElseGet(() -> MessageCode.GenerateMessenger(MessageCode.FAIL));
+    }
+
+    @Override
+    public Messenger saveAll(List<ToeicDTO> toeicDTOs) {
+        return Messenger.builder().status(MessageCode.SUCCESS.getStatus()).message(MessageCode.SUCCESS.getMessage())
+                .values(
+                        toeicDTOs.stream()
+                                .map(i -> save(i))
+                                .filter(i -> i.getStatus() == MessageCode.SUCCESS.getStatus())
+                                .count())
+                .build();
+    }
+
 }

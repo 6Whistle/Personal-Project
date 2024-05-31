@@ -64,4 +64,18 @@ public class ToeicController {
     }
 
     // ==================== Custom ====================
+
+    @GetMapping("/random")
+    public ResponseEntity<Messenger> random() {
+        return ResponseEntity.ok(
+            toeicService.random()
+        );
+    }
+
+    @PostMapping("/registerAll")
+    public ResponseEntity<Messenger> registerAll(@RequestBody List<ToeicDTO> ToeicDTOs) {
+        return ResponseEntity.ok(
+            toeicService.saveAll(ToeicDTOs)
+        );
+    }
 }

@@ -51,8 +51,11 @@ if __name__ == '__main__':
     pass
     toeic = ToeicModel(dataPath='c:\\Users\\bitcamp\\personal-project\\python-server\\app\\api\\toeic\\data\\', savePath='c:\\Users\\bitcamp\\personal-project\\python-server\\app\\api\\toeic\\save\\')
     test_json = toeic.preprocess('toeic_test.json', 'result.json')
-    token = requests.post(url="http://localhost:8080/api/user/login", json={"email": "admin", "password": "1234"}).json().get("accessToken")
-    ic(test_json.to_dict(orient='records')[0])
-    ic(token)
-    for i in test_json.to_dict(orient='records'):
-        response = requests.post("http://localhost:8080/api/toeic/register", json=i, headers={"Authorization": f"Bearer {token}"})
+    token = requests.post(url="http://localhost:8080/api/user/login", json={"email": "admin@admin", "password": "12345678a"}).json().get("accessToken")
+    test_json = test_json.to_dict(orient='records')
+    for x in test_json:
+        x['choices'] = x['choices'].split(',')
+    ic(test_json)
+    for x in range(len(test_json)//100+1):
+        response = requests.post("http://localhost:8080/api/toeic/registerAll", json=test_json[x*100:min(x*100+100, len(test_json))], headers={"Authorization": f"Bearer {token}"})
+    print(response.json())

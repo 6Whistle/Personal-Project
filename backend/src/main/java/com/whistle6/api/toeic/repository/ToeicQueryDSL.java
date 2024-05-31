@@ -12,5 +12,6 @@ public interface ToeicQueryDSL {
     Optional<Toeic> findByIdDSL(Long id);
     Optional<Toeic> finaByIdDSL(Long id);
     Long countAllDSL();
-
+    Optional<Toeic> findRandomDSL(Long offset);
+    
 }
