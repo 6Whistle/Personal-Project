@@ -1,4 +1,4 @@
-import { setCookie } from "nookies";
+import { destroyCookie, parseCookies, setCookie } from "nookies";
 import {
   accessTokenAPI,
   noTokenInstance,
@@ -7,6 +7,7 @@ import {
 import { API } from "../../common/enum/API";
 import { RQ } from "../../common/enum/RQ";
 import { User } from "../model/user";
+import { jwtDecode } from "jwt-decode";
 
 export const findUserByIdAPI = async (id: number) =>
   accessTokenAPI(springInstance(), "get", `${API.USER}${id}`, id, null);
@@ -16,7 +17,7 @@ export const checkEmailAPI = async (email: string) =>
     springInstance(),
     "get",
     `${API.USER}${RQ.EMAIL}`,
-    {email},
+    { email },
     null
   );
 
@@ -43,6 +44,21 @@ export const loginUserAPI = async (email: string, password: string) =>
       console.log(error);
       return error;
     });
+
+export const logoutUserAPI = async () => {
+  const msg = parseCookies().refreshToken
+    ? accessTokenAPI(
+        springInstance(),
+        "post",
+        `${API.USER}${RQ.LOGOUT}`,
+        null,
+        { id: jwtDecode<any>(parseCookies().refreshToken).userId }
+      )
+    : new Promise<any>(() => {return { status: 200, message: "Logout success"} })
+    destroyCookie({}, "accessToken", { path: "/" });
+    destroyCookie({}, "refreshToken", { path: "/" });
+  return msg
+};
 
 export const updateUserAPI = async (user: User) =>
   accessTokenAPI(

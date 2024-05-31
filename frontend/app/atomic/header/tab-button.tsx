@@ -1,9 +1,23 @@
-export default function TabButton({ tabName }: { tabName: string }) {
+import { PG } from "@/app/component/common/enum/PG";
+import { RQ } from "@/app/component/common/enum/RQ";
+import { url } from "inspector";
+import Link from "next/link";
+
+export default function TabButton({ tabName, url }: { tabName: string, url: string }) {
   return (
+    <Link href={url}>
     <div className="text-black text-base font-medium font-['Inter'] leading-normal whitespace-nowrap">
       {tabName}
     </div>
+    </Link>
   );
 }
 
-export const tabNames: string[] = ["Tab 1", "Tab 2", "Tab 3"];
+export const tabNames: {tabName: string, url: string}[] = [];
+
+export const loginedTabNames = [
+  { tabName : "Chat", url : `${PG.CHAT}` },
+  { tabName : "Profile", url : `${PG.USER}` },
+  { tabName : "Toeic", url : `${PG.TOIEC}` },
+]
+

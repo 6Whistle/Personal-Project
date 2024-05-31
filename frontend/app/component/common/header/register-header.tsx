@@ -1,6 +1,10 @@
 import Link from "next/link";
 import HeaderButton from "../../../atomic/header/header-button";
-import TabButton, { tabNames } from "../../../atomic/header/tab-button";
+import TabButton, { loginedTabNames, tabNames } from "../../../atomic/header/tab-button";
+import { PG } from "../enum/PG";
+import { RQ } from "../enum/RQ";
+import { parseCookies } from "nookies";
+import HeaderLogoutButton from "@/app/atomic/header/header-logout-button";
 
 export default function RegisterHeader() {
   return (
@@ -9,15 +13,22 @@ export default function RegisterHeader() {
         6Whistle Blog
       </Link>
       <div className="w-full justify-center items-center gap-8 flex">
-        {tabNames.map((tabName) => (
-          <TabButton tabName={tabName} key={tabName} />
-        ))}
+        {
+          parseCookies().refreshToken
+          ? loginedTabNames.map((i, index) =>  <TabButton tabName={i.tabName} key={index} url={i.url} />)
+          : tabNames.map((i, index) => <TabButton tabName={i.tabName} key={index} url={i.url} />)
+        }
       </div>
       <div className="justify-start items-start gap-3 flex">
         <div className="w-9 justify-center items-center gap-2 flex">
           <img src="/profile.svg" alt="profileImg" />
         </div>
-        <HeaderButton text="Register" />
+        {
+          parseCookies().refreshToken 
+          ? <HeaderLogoutButton text="Logout" />
+          : <HeaderButton text="Register" url={`${PG.USER}${RQ.REGISTER}`} />
+        }
+
       </div>
     </nav>
   );

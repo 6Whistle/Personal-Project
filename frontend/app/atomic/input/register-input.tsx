@@ -5,11 +5,13 @@ export default function RegisterInput({
   placeholder,
   target,
   register,
+  options,
 }: {
   inputType: string;
   placeholder: string;
   target: string;
   register: UseFormRegister<any>;
+  options?: any;
 }) {
   return (
     <input
@@ -23,33 +25,47 @@ export default function RegisterInput({
 
 export const registerList = [
   {
-    inputType: "text",
-    target: "name",
-    placeholder: "Enter your name",
-  },
-  {
     inputType: "email",
     target: "email",
     placeholder: "Enter your email",
-  },
-  {
-    inputType: "tel",
-    target: "phone",
-    placeholder: "Enter your phone",
+    options: { required: true },
   },
   {
     inputType: "password",
     target: "password",
     placeholder: "Enter your Password",
+    options: {
+      required: true,
+      minLength: {
+        value: 6,
+        message: "Password must be at least 6 characters",
+      },
+      maxLength: {
+        value: 20,
+        message: "Password must be at most 20 characters",
+      },
+      format: {
+        value: /^[a-zA-Z0-9]{6,20}$/,
+        message: "Password must be alphanumeric",
+      },
+    },
+  },
+  {
+    inputType: "text",
+    target: "name",
+    placeholder: "Enter your name",
+    options: { required: true },
   },
   {
     inputType: "date",
     target: "birth",
     placeholder: "Enter your birthdate",
+    options: { required: true },
   },
   {
     inputType: "tel",
     target: "phone",
     placeholder: "Enter your phone",
+    options: { required: true },
   },
 ];

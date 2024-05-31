@@ -47,6 +47,8 @@ public class JwtProvider {
         .expiration(Date.from(Instant.now().plus(accessExpiredDate, ChronoUnit.MILLIS)))
         .subject("access")
         .claim("role", user.getRole())
+        .claim("userId", user.getId())
+        .claim("userrName", user.getName())
         .compact();
     }
 
@@ -57,6 +59,7 @@ public class JwtProvider {
         .expiration(Date.from(Instant.now().plus(refreshExpiredDate, ChronoUnit.MILLIS)))
         .subject("refresh")
         .claim("role", user.getRole())
+        .claim("userId", user.getId())
         .compact();
     }
 
