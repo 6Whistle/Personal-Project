@@ -37,6 +37,7 @@ export default function ToeicInputForm({
       <div className="w-[60px] h-8 px-6 py-3.5 bg-black rounded-lg shadow justify-center items-center gap-2 flex">
         <button
             onClick={onClickHandler}
+            type="button"
           className="text-white text-base font-medium font-['Inter'] leading-normal"
         >
           Check

@@ -41,7 +41,11 @@ export default function Home() {
     };
 
     const onInValid = () => {
-        alert("Please fill in the form!");
+      errors.email?.message
+      ? alert(errors.email?.message)
+      : errors.password?.message
+      ? alert(errors.password?.message)
+      : alert("Please enter all fields");
     }
 
     useEffect(() => {

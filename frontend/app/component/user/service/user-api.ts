@@ -10,7 +10,7 @@ import { User } from "../model/user";
 import { jwtDecode } from "jwt-decode";
 
 export const findUserByIdAPI = async (id: number) =>
-  accessTokenAPI(springInstance(), "get", `${API.USER}${id}`, id, null);
+  accessTokenAPI(springInstance(), "get", `${API.USER}${RQ.DETAIL}`, {id}, null);
 
 export const checkEmailAPI = async (email: string) =>
   accessTokenAPI(
@@ -68,3 +68,13 @@ export const updateUserAPI = async (user: User) =>
     null,
     user
   );
+
+export const deleteUserAPI = async (id: number) => 
+  accessTokenAPI(springInstance(), "delete", `${API.USER}${RQ.DELETE}`, { id }, null)
+  .then((res) => {
+    if(res.status === 200){
+      destroyCookie({}, "accessToken", { path: "/" });
+      destroyCookie({}, "refreshToken", { path: "/" });
+      return res;
+    }
+  });

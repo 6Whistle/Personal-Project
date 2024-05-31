@@ -16,8 +16,8 @@ export default function TabButton({ tabName, url }: { tabName: string, url: stri
 export const tabNames: {tabName: string, url: string}[] = [];
 
 export const loginedTabNames = [
-  { tabName : "Chat", url : `${PG.CHAT}` },
-  { tabName : "Profile", url : `${PG.USER}` },
-  { tabName : "Toeic", url : `${PG.TOEIC}` },
+  { tabName : "CHAT", url : `${PG.CHAT}` },
+  { tabName : "TOEIC", url : `${PG.TOEIC}` },
+  { tabName : "PROFILE", url : `${PG.USER}${RQ.DETAIL}` },
 ]
 

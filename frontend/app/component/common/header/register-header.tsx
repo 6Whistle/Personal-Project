@@ -5,6 +5,7 @@ import { PG } from "../enum/PG";
 import { RQ } from "../enum/RQ";
 import { parseCookies } from "nookies";
 import HeaderLogoutButton from "@/app/atomic/header/header-logout-button";
+import ProfileImage from "@/public/profile.svg";
 
 export default function RegisterHeader() {
   return (
@@ -20,9 +21,13 @@ export default function RegisterHeader() {
         }
       </div>
       <div className="justify-start items-start gap-3 flex">
-        <div className="w-9 justify-center items-center gap-2 flex">
-          <img src="/profile.svg" alt="profileImg" />
-        </div>
+        {
+          parseCookies().refreshToken &&
+          <Link href={`${PG.USER}${RQ.DETAIL}`} className="w-9 justify-center items-center gap-2 flex">
+            <img src="/profile.svg" alt="profileImg" />
+          </Link>
+        }
+        
         {
           parseCookies().refreshToken 
           ? <HeaderLogoutButton text="Logout" />

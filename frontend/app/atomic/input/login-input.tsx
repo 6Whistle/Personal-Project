@@ -33,14 +33,14 @@ export const loginList = [
     title: "Email",
     type: "email",
     target: "email",
-    options: { required: true },
+    options: { required: { value : true, message: "Email is required"}},
   },
   {
     title: "Password",
     type: "password",
     target: "password",
     options: {
-      required: true,
+      required: { value: true, message: "Password is required" },
       minLength: {
         value: 6,
         message: "Password must be at least 6 characters",
@@ -49,10 +49,10 @@ export const loginList = [
         value: 20,
         message: "Password must be at most 20 characters",
       },
-      format: {
-        value: /^[a-zA-Z0-9]{6,20}$/,
-        message: "Password must be alphanumeric",
-      }
+      pattern: {
+        value: /^(?=.*[a-zA-Z])(?=.*[0-9]).{6,20}$/,
+        message: "Password must have at least one letter and one number",
+      },
     },
   },
 ];

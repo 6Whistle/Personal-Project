@@ -76,12 +76,32 @@ public class JwtProvider {
                 .orElseGet(() -> "undefined");
     }
 
+    public String parseBearerToken(String accessTokenWithBearer) {
+        return Stream.of(accessTokenWithBearer)
+        .filter(i -> i.startsWith("Bearer "))
+        .map(i -> i.substring(7))
+        .findAny()
+        .orElseGet(() -> "undefined");
+    }
+
     public Boolean validateToken(String token, String type){
         try {
             return Stream.of(Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token))
             .filter(i -> i.getPayload().getSubject().equals(type))
             .filter(i -> i.getPayload().getIssuer().equals(issuer))
             .filter(i -> i.getPayload().getExpiration().after(Date.from(Instant.now())))
+            .map(i -> true)
+            .findAny()
+            .orElseGet(() -> false);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public Boolean checkTokenWithId(String token, Long id){
+        try {
+            return Stream.of(Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token))
+            .filter(i -> id == null || i.getPayload().get("userId", Long.class).equals(id))
             .map(i -> true)
             .findAny()
             .orElseGet(() -> false);

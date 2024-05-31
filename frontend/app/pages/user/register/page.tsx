@@ -22,7 +22,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { parseCookies } from "nookies";
 import { useEffect } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { FieldErrors, SubmitHandler, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 
 export default function RegisterUser() {
@@ -51,7 +51,20 @@ export default function RegisterUser() {
       })
       .catch((error: any) => console.log("Register error : ", error));
 
-  const onInValid = () => alert("Please enter all fields");
+    const onInValid = (errors: FieldErrors) => {
+      console.log(errors)
+        errors.email?.message
+        ? alert(errors.email?.message)
+        : errors.password?.message
+        ? alert(errors.password?.message)
+        : errors.name?.message
+        ? alert(errors.name?.message)
+        : errors.birth?.message
+        ? alert(errors.birth?.message)
+        : errors.phone?.message
+        ? alert(errors.phone?.message)
+        : alert("Please enter all fields")
+    }
 
   useEffect(() => {
     if (parseCookies().refreshToken) router.replace(`${PG.CHAT}`)
@@ -88,7 +101,7 @@ export default function RegisterUser() {
                       key={index}
                     />
                   ))}
-                  <RegisterButton />
+                  <RegisterButton title={"Sign in"} />
                   <p className="mt-6 text-xs text-gray-600 text-center">
                     Already have an account?{" "}
                     <Link href="/">

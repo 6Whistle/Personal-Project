@@ -51,7 +51,7 @@ async def read_root():
     return {"Hello": "World"}
 
 
-@app.post("/app/chat/ai")
+@app.post("/api/chat/ai")
 async def chat(req:Request, Authorization = Header(default=None)) -> Response:
     if Authorization is None:
         raise HTTPException(status_code=401, detail="Authorization Error")

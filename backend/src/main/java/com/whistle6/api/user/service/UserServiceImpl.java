@@ -191,4 +191,12 @@ public class UserServiceImpl implements UserService{
         .orElseThrow(() -> new AuthException());
     }
 
+    @Override
+    public Boolean checkTokenWithId(String token, Long id) {
+        return Stream.of(token)
+        .map(i -> jwtProvider.parseBearerToken(i))
+        .map(i -> jwtProvider.checkTokenWithId(i, id))
+        .findAny()
+        .get();
+    }
 }

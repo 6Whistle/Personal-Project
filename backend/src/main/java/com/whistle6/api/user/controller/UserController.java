@@ -1,6 +1,7 @@
 package com.whistle6.api.user.controller;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.whistle6.api.common.component.Messenger;
+import com.whistle6.api.common.component.exception.AuthException;
+import com.whistle6.api.common.enums.MessageCode;
 import com.whistle6.api.user.model.UserDTO;
 import com.whistle6.api.user.service.UserService;
 
@@ -41,25 +44,46 @@ public class UserController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Messenger> update(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<Messenger> update(@RequestHeader(name = "Authorization") String token, @RequestBody UserDTO userDTO) {
         log.info("update: {}", userDTO);
         return ResponseEntity.ok(
-            userService.update(userDTO)
+            Stream.of(token)
+            .filter(i -> userService.checkTokenWithId(i, userDTO.getId()))
+            .map(i -> userService.update(userDTO))
+            .findAny()
+            .orElseThrow(() -> new AuthException())
         );
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<Messenger> delete(@RequestParam(name = "id") Long id) {
+    public ResponseEntity<Messenger> delete(@RequestHeader(name = "Authorization") String token, @RequestParam(name = "id") Long id) {
         log.info("delete: {}", id);
         return ResponseEntity.ok(
-            userService.deleteById(id)
+            Stream.of(token)
+            .filter(i -> userService.checkTokenWithId(i, id))
+            .map(i -> userService.deleteById(id))
+            .findAny()
+            .orElseThrow(() -> new AuthException())
         );
     }
 
     // ==================== Query ====================
 
+    @GetMapping("/detail")
+    public ResponseEntity<Messenger> findById(@RequestHeader(name = "Authorization") String token, @RequestParam(name = "id") Long id) {
+        log.info("findById: {}", id);
+        return ResponseEntity.ok(
+            Stream.of(token)
+            .filter(i -> userService.checkTokenWithId(i, id))
+            .map(i -> userService.findById(id))
+            .map(i -> Messenger.builder().status(MessageCode.SUCCESS.getStatus()).message(MessageCode.SUCCESS.getMessage()).values(i).build())
+            .findAny()
+            .orElseThrow(() -> new AuthException())
+        );
+    }
+
     @GetMapping("/all")
-    public ResponseEntity<List<UserDTO>> findAll() {
+    public ResponseEntity<List<UserDTO>> findAll(@RequestHeader(name = "Authorization") String token) {
         log.info("findAll");
         return ResponseEntity.ok(
             userService.findAll()

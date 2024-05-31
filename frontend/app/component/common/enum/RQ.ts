@@ -5,10 +5,10 @@ export const enum RQ{
     UPDATE='/update',
     DELETE='/delete',
     EXIST='/exist',
-    FIND='/find',
     FINDALL='/all',
     REFRESH='/refresh',
     EMAIL = "/check-email",
     RANDOM = "/random",
     CHAT = "/chat",
+    DETAIL = "/detail",
 }
