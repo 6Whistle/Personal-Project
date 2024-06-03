@@ -48,6 +48,7 @@ dependencies {
 	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
 	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 
+	implementation group: 'org.springframework.security', name: 'spring-security-core', version: '6.3.0'
 }
 clean {
 	delete file('src/main/generated')

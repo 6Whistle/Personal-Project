@@ -1,5 +1,6 @@
 import base64
 import os
+import time
 from fastapi import APIRouter, HTTPException, Header
 
 from fastapi.middleware.cors import CORSMiddleware
@@ -16,6 +17,8 @@ async def titanic(req:Request, Authorization = Header(default=None)):
         raise HTTPException(status_code=401, detail="Authorization Error")
     try:
         token = jwt.decode(Authorization.split(' ')[1], base64.b64decode(os.environ["SECRET_KEY"].encode()), algorithms=['HS256'])
+        if token.get('exp') < time.time() or token.get('iss') != os.environ["ISSUER"]:
+            raise HTTPException(status_code=401, detail="Authorization Error")
     except Exception as e:
         raise HTTPException(status_code=401, detail="Authorization Error")
     service = TitanicService()

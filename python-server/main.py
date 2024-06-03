@@ -1,4 +1,5 @@
 import base64
+import time
 from typing import Optional, Union
 from fastapi import FastAPI, HTTPException, Header
 import jwt
@@ -10,6 +11,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.main_router import router
 from app.api.common.model.request import Request
 from app.api.common.model.response import Response
+from icecream import ic
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 load_dotenv(os.path.join(BASE_DIR, ".env"))
@@ -57,6 +59,8 @@ async def chat(req:Request, Authorization = Header(default=None)) -> Response:
         raise HTTPException(status_code=401, detail="Authorization Error")
     try:
         token = jwt.decode(Authorization.split(' ')[1], base64.b64decode(os.environ["SECRET_KEY"].encode()), algorithms=['HS256'])
+        if token.get('exp') < time.time() or token.get('iss') != os.environ["ISSUER"]:
+            raise HTTPException(status_code=401, detail="Authorization Error")
     except Exception as e:
         raise HTTPException(status_code=401, detail="Authorization Error")
     
